@@ -132,7 +132,7 @@ class PreviewThumbnails {
   // Download VTT files and parse them
   getThumbnails = url => {
     return new Promise(resolve => {
-      const { src } = url || this.player.config.previewThumbnails;
+      const { src } = this.player.config.previewThumbnails;
 
       if (!url || is.empty(src)) {
         throw new Error('Missing previewThumbnails.src config attribute');

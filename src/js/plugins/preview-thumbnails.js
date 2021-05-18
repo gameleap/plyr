@@ -5,15 +5,15 @@ import is from '../utils/is';
 import { formatTime } from '../utils/time';
 
 // Arg: vttDataString example: "WEBVTT\n\n1\n00:00:05.000 --> 00:00:10.000\n1080p-00001.jpg"
-const parseVtt = (vttDataString) => {
+const parseVtt = vttDataString => {
   const processedList = [];
   const frames = vttDataString.split(/\r\n\r\n|\n\n|\r\r/);
 
-  frames.forEach((frame) => {
+  frames.forEach(frame => {
     const result = {};
     const lines = frame.split(/\r\n|\n|\r/);
 
-    lines.forEach((line) => {
+    lines.forEach(line => {
       if (!is.number(result.startTime)) {
         // The line with start and end times on it is the first line of interest
         const matchTimes = line.match(
@@ -104,13 +104,13 @@ class PreviewThumbnails {
     return this.player.isHTML5 && this.player.isVideo && this.player.config.previewThumbnails.enabled;
   }
 
-  load = (url) => {
+  load = url => {
     // Toggle the regular seek tooltip
     if (this.player.elements.display.seekTooltip) {
       this.player.elements.display.seekTooltip.hidden = this.enabled;
     }
 
-    if (!this.enabled) {
+    if (!this.enabled || !this.player.config.previewThumbnails.src) {
       return;
     }
 
@@ -130,11 +130,11 @@ class PreviewThumbnails {
   };
 
   // Download VTT files and parse them
-  getThumbnails = (url) => {
-    return new Promise((resolve) => {
+  getThumbnails = url => {
+    return new Promise(resolve => {
       const { src } = url || this.player.config.previewThumbnails;
 
-      if (is.empty(src)) {
+      if (!url || is.empty(src)) {
         throw new Error('Missing previewThumbnails.src config attribute');
       }
 
@@ -150,7 +150,7 @@ class PreviewThumbnails {
 
       // Via callback()
       if (is.function(src)) {
-        src((thumbnails) => {
+        src(thumbnails => {
           this.thumbnails = thumbnails;
           sortAndResolve();
         });
@@ -160,7 +160,7 @@ class PreviewThumbnails {
         // If string, convert into single-element list
         const urls = is.string(src) ? [src] : src;
         // Loop through each src URL. Download and process the VTT file, storing the resulting data in this.thumbnails
-        const promises = urls.map((u) => this.getThumbnail(u));
+        const promises = urls.map(u => this.getThumbnail(u));
         // Resolve
         Promise.all(promises).then(sortAndResolve);
       }
@@ -168,9 +168,9 @@ class PreviewThumbnails {
   };
 
   // Process individual VTT file
-  getThumbnail = (url) => {
-    return new Promise((resolve) => {
-      fetch(url).then((response) => {
+  getThumbnail = url => {
+    return new Promise(resolve => {
+      fetch(url).then(response => {
         const thumbnail = {
           frames: parseVtt(response),
           height: null,
@@ -205,7 +205,7 @@ class PreviewThumbnails {
     });
   };
 
-  startMove = (event) => {
+  startMove = event => {
     if (!this.loaded) {
       return;
     }
@@ -252,7 +252,7 @@ class PreviewThumbnails {
     this.toggleThumbContainer(false, true);
   };
 
-  startScrubbing = (event) => {
+  startScrubbing = event => {
     // Only act on left mouse button (0), or touch device (event.button does not exist or is false)
     if (is.nullOrUndefined(event.button) || event.button === false || event.button === 0) {
       this.mouseDown = true;
@@ -361,7 +361,7 @@ class PreviewThumbnails {
     // Find the desired thumbnail index
     // TODO: Handle a video longer than the thumbs where thumbNum is null
     const thumbNum = this.thumbnails[0].frames.findIndex(
-      (frame) => this.seekTime >= frame.startTime && this.seekTime <= frame.endTime,
+      frame => this.seekTime >= frame.startTime && this.seekTime <= frame.endTime,
     );
     const hasThumb = thumbNum >= 0;
     let qualityIndex = 0;
@@ -453,9 +453,9 @@ class PreviewThumbnails {
   };
 
   // Remove all preview images that aren't the designated current image
-  removeOldImages = (currentImage) => {
+  removeOldImages = currentImage => {
     // Get a list of all images, convert it from a DOM list to an array
-    Array.from(this.currentImageContainer.children).forEach((image) => {
+    Array.from(this.currentImageContainer.children).forEach(image => {
       if (image.tagName.toLowerCase() !== 'img') {
         return;
       }
@@ -482,7 +482,7 @@ class PreviewThumbnails {
   // Preload images before and after the current one. Only if the user is still hovering/seeking the same frame
   // This will only preload the lowest quality
   preloadNearby = (thumbNum, forward = true) => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         const oldThumbFilename = this.thumbnails[0].frames[thumbNum].text;
 
@@ -497,7 +497,7 @@ class PreviewThumbnails {
 
           let foundOne = false;
 
-          thumbnailsClone.forEach((frame) => {
+          thumbnailsClone.forEach(frame => {
             const newThumbFilename = frame.text;
 
             if (newThumbFilename !== oldThumbFilename) {

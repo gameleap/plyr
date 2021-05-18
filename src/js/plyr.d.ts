@@ -240,6 +240,11 @@ declare class Plyr {
    * Destroy lib instance
    */
   destroy(): void;
+
+  /**
+   * Loads preview thumbnails.
+   */
+  loadPreviewThumbnails(url?: string): void;
 }
 
 declare namespace Plyr {

@@ -282,7 +282,7 @@ class Plyr {
 
     // Listen for events if debugging
     if (this.config.debug) {
-      on.call(this, this.elements.container, this.config.events.join(' '), (event) => {
+      on.call(this, this.elements.container, this.config.events.join(' '), event => {
         this.debug.log(`event: ${event.type}`);
       });
     }
@@ -412,7 +412,7 @@ class Plyr {
    * Toggle playback based on current status
    * @param {Boolean} input
    */
-  togglePlay = (input) => {
+  togglePlay = input => {
     // Toggle based on current state if nothing passed
     const toggle = is.boolean(input) ? input : !this.playing;
 
@@ -446,7 +446,7 @@ class Plyr {
    * Rewind
    * @param {Number} seekTime - how far to rewind in seconds. Defaults to the config.seekTime
    */
-  rewind = (seekTime) => {
+  rewind = seekTime => {
     this.currentTime -= is.number(seekTime) ? seekTime : this.config.seekTime;
   };
 
@@ -454,7 +454,7 @@ class Plyr {
    * Fast forward
    * @param {Number} seekTime - how far to fast forward in seconds. Defaults to the config.seekTime
    */
-  forward = (seekTime) => {
+  forward = seekTime => {
     this.currentTime += is.number(seekTime) ? seekTime : this.config.seekTime;
   };
 
@@ -582,7 +582,7 @@ class Plyr {
    * Increase volume
    * @param {Boolean} step - How much to decrease by (between 0 and 1)
    */
-  increaseVolume = (step) => {
+  increaseVolume = step => {
     const volume = this.media.muted ? 0 : this.volume;
     this.volume = volume + (is.number(step) ? step : 0);
   };
@@ -591,7 +591,7 @@ class Plyr {
    * Decrease volume
    * @param {Boolean} step - How much to decrease by (between 0 and 1)
    */
-  decreaseVolume = (step) => {
+  decreaseVolume = step => {
     this.increaseVolume(-step);
   };
 
@@ -1044,7 +1044,7 @@ class Plyr {
    * Toggle the player controls
    * @param {Boolean} [toggle] - Whether to show the controls
    */
-  toggleControls = (toggle) => {
+  toggleControls = toggle => {
     // Don't toggle if missing UI support or if it's audio
     if (this.supported.ui && !this.isAudio) {
       // Get state before change
@@ -1210,11 +1210,17 @@ class Plyr {
     }
   };
 
+  loadPreviewThumbnails = url => {
+    if (this.config.previewThumbnails.enabled) {
+      this.previewThumbnails = new PreviewThumbnails(this, url);
+    }
+  };
+
   /**
    * Check for support for a mime type (HTML5 only)
    * @param {String} type - Mime type
    */
-  supports = (type) => support.mime.call(this, type);
+  supports = type => support.mime.call(this, type);
 
   /**
    * Check for support
@@ -1255,7 +1261,7 @@ class Plyr {
       return null;
     }
 
-    return targets.map((t) => new Plyr(t, options));
+    return targets.map(t => new Plyr(t, options));
   }
 }
 

@@ -571,6 +571,7 @@ declare namespace Plyr {
   interface PreviewThumbnailsOptions {
     enabled?: boolean;
     src?: string | string[];
+    aspectRatio?: number;
   }
 
   export interface Elements {

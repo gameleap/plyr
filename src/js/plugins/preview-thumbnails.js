@@ -566,6 +566,10 @@ class PreviewThumbnails {
   }
 
   get thumbAspectRatio() {
+    if (this.player.config.previewThumbnails.aspectRatio) {
+      return this.player.config.previewThumbnails.aspectRatio;
+    }
+
     if (this.usingSprites) {
       return this.thumbnails[0].frames[0].w / this.thumbnails[0].frames[0].h;
     }

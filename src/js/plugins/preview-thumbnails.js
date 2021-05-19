@@ -81,10 +81,10 @@ class PreviewThumbnails {
   /**
    * PreviewThumbnails constructor.
    * @param {Plyr} player
-   * @param {string} url - optional url to load
+   * @param {string | string[]} src - optional src to load
    * @return {PreviewThumbnails}
    */
-  constructor(player, url) {
+  constructor(player, src) {
     this.player = player;
     this.thumbnails = [];
     this.loaded = false;
@@ -97,24 +97,24 @@ class PreviewThumbnails {
       scrubbing: {},
     };
 
-    this.load(url);
+    this.load(src);
   }
 
   get enabled() {
     return this.player.isHTML5 && this.player.isVideo && this.player.config.previewThumbnails.enabled;
   }
 
-  load = url => {
+  load = src => {
     // Toggle the regular seek tooltip
     if (this.player.elements.display.seekTooltip) {
       this.player.elements.display.seekTooltip.hidden = this.enabled;
     }
 
-    if (!this.enabled || !this.player.config.previewThumbnails.src) {
+    if (!this.enabled || !this.player.config.previewThumbnails.src || !src) {
       return;
     }
 
-    this.getThumbnails(url).then(() => {
+    this.getThumbnails(src).then(() => {
       if (!this.enabled) {
         return;
       }
@@ -130,11 +130,11 @@ class PreviewThumbnails {
   };
 
   // Download VTT files and parse them
-  getThumbnails = url => {
+  getThumbnails = src => {
     return new Promise(resolve => {
-      const { src } = this.player.config.previewThumbnails;
+      src = src || this.player.config.previewThumbnails.src;
 
-      if (!url || is.empty(src)) {
+      if (is.empty(src)) {
         throw new Error('Missing previewThumbnails.src config attribute');
       }
 

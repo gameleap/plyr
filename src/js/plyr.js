@@ -1210,9 +1210,9 @@ class Plyr {
     }
   };
 
-  loadPreviewThumbnails = url => {
+  loadPreviewThumbnails = src => {
     if (this.config.previewThumbnails.enabled) {
-      this.previewThumbnails = new PreviewThumbnails(this, url);
+      this.previewThumbnails = new PreviewThumbnails(this, src);
     }
   };
 

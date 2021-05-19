@@ -244,7 +244,7 @@ declare class Plyr {
   /**
    * Loads preview thumbnails.
    */
-  loadPreviewThumbnails(url?: string): void;
+  loadPreviewThumbnails(url?: string | string[]): void;
 }
 
 declare namespace Plyr {

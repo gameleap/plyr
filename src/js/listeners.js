@@ -579,6 +579,7 @@ class Listeners {
         player.rewind();
       },
       'rewind',
+      false
     );
 
     // Rewind
@@ -591,6 +592,7 @@ class Listeners {
         player.forward();
       },
       'fastForward',
+      false
     );
 
     // Mute toggle
@@ -601,6 +603,7 @@ class Listeners {
         player.muted = !player.muted;
       },
       'mute',
+      false
     );
 
     // Captions toggle
@@ -624,6 +627,7 @@ class Listeners {
         player.fullscreen.toggle();
       },
       'fullscreen',
+      false
     );
 
     // Picture-in-Picture
